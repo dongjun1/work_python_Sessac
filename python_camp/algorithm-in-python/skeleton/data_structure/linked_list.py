@@ -31,7 +31,7 @@ class LinkedList:
             else :
                 for i, e in enumerate(elements) :
                     if not isinstance(i, LinkedNode) :
-                        elements[i] = LinkedNode(i + 1, e)
+                        elements[i] = LinkedNode(len(elements)-i, e)
                 
             for i in range(len(elements)) :
                 i += 1

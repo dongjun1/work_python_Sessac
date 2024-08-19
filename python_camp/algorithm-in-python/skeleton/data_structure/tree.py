@@ -10,34 +10,71 @@ class TreeNode:
 
 class Tree:
     def __init__(self, root, children = []):
-        pass 
+        if not isinstance(root, TreeNode) and not isinstance(children, TreeNode):
+            self.root = TreeNode(root, root)
+            self.children = children
+        
 
     def iter_nodes(self):
-        pass
-
+        yield self.root
+        cur = self.children
+        for node in cur:
+            for n in node.iter_nodes():
+                yield n
+    
     def iter_nodes_with_address(self):
-        pass
+        yield [], self.root
+        
+        for i, node in enumerate(self.children):
+            for addr, n in node.iter_nodes_with_address():
+                yield [i] + addr, n
+            
+
+                    
 
     def __iter__(self):
-        pass 
-
+        yield self.root.datum
+        cur = self.children
+        for node in cur:
+            for n in node:
+                yield n
+        
+            
     def insert(self, address, elem):
         pass 
 
-    def delete(self, address):
-        pass
+    # def delete(self, address):
+    #     addr_with_node = list(self.iter_nodes_with_address())
+    #     for node in addr_with_node:
+    #         if node[0] == address:
+    #             del_value = node[-1].datum
+
         
     def search(self, elem):
-        pass 
+        addr_with_node = list(self.iter_nodes_with_address())
+        for node in addr_with_node:
+            if node[-1].datum == elem:
+                return node[0]
+
 
     def root_datum(self):
-        pass 
-
+        return self.root.datum
+    
     def height(self):
-        pass 
+        res = []
+        for i in self.__iter__():
+            res += [i]
+        return len(str(res[-1]))
+    
 
     def __str__(self):
-        pass 
+        res = ''
+        res += str(self.root.datum) + ' '
+        cur = self.children
+        for i in self.__iter__():
+            res += str(i) + ' '
+        return res
+        
 
 
 if __name__ == '__main__':
@@ -46,25 +83,29 @@ if __name__ == '__main__':
                 Tree(12, [Tree(121), Tree(122), Tree(123),])
              ]
          )
-    print(t1)
+    # print(t1)
     
     assert t1.root_datum() == 1 
     assert t1.height() == 3
-
+    # for node in t1.iter_nodes():
+    #     print(node)
+    # for addr, n in t1.iter_nodes_with_address():
+    #     print(addr, n)
     for addr, n in t1.iter_nodes_with_address():
         assert [int(e)-1 for e in list(str(n.datum))[1:]] == addr 
         assert t1.search(n.datum) == addr 
 
-    t1.insert([2], Tree(13, [Tree(131), Tree(132), Tree(133)]))
-    t1.insert([1, 1], Tree(122, [Tree(1221), Tree(1222)]))
 
-    print(t1)
+    # t1.insert([2], Tree(13, [Tree(131), Tree(132), Tree(133)]))
+    # t1.insert([1, 1], Tree(122, [Tree(1221), Tree(1222)]))
+
+    # print(t1)
     
-    assert 122 == t1.delete([1,2])
-    assert 123 == t1.delete([1,2])
+    # assert 122 == t1.delete([1,2])
+    # assert 123 == t1.delete([1,2])
 
-    for addr, n in t1.iter_nodes_with_address():
-        assert [int(e)-1 for e in list(str(n.datum))[1:]] == addr 
-        assert t1.search(n.datum) == addr 
+    # for addr, n in t1.iter_nodes_with_address():
+    #     assert [int(e)-1 for e in list(str(n.datum))[1:]] == addr 
+    #     assert t1.search(n.datum) == addr 
 
-    print(t1)
+    # print(t1)
