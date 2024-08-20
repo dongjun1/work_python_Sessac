@@ -30,8 +30,6 @@ class Tree:
                 yield [i] + addr, n
             
 
-                    
-
     def __iter__(self):
         yield self.root.datum
         cur = self.children

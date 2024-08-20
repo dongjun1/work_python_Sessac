@@ -1,4 +1,7 @@
-from node import Node 
+try:
+    from node import Node 
+except ModuleNotFoundError:
+    from data_structure.node import Node
 
 class LinkedNode(Node):
     def __init__(self, node_id, datum, next = None):

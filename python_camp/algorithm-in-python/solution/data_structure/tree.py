@@ -1,8 +1,3 @@
-try:
-    from node import Node 
-except ModuleNotFoundError:
-    from data_structure.node import Node
-
 class TreeNode:
     def __init__(self, node_id, datum):
         self.node_id = node_id
