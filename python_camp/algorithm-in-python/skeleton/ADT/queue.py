@@ -126,7 +126,7 @@ if __name__ == '__main__':
         assert not q2.is_empty()
         q2.dequeue()
 
-        assert q2.elements() == [('c',1), ('d',4), ('e',2), ('b',3)]
+        assert q2.elements() == [('c',1), ('e',2), ('b',3)]
         assert q2.size() == 3 
         assert q2.front() == ('b', 3) 
         assert not q2.is_empty()

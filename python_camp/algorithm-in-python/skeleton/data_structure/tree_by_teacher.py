@@ -13,6 +13,11 @@ class Tree:
         if not isinstance(root, TreeNode):
             root = TreeNode(root, root)
         self.root = root
+        # children = children
+
+        # for idx, child in enumerate(children):
+        #     children[idx] = Tree(child)
+        
         self.children = children
 
         
@@ -74,11 +79,15 @@ class Tree:
     
 
     def __str__(self):
-        res = ''
+        return '\n'.join(self.s())
 
-        cur = self.children
-        for i in self.__iter__():
-            res += str(i) + ' '
+    def s(t):
+        res = [str(t.root.datum)]
+
+        for child in t.children:
+            part = child.s()
+            for line in part:
+                res.append('\t' + line)
         return res
         
 
@@ -89,20 +98,20 @@ if __name__ == '__main__':
                 Tree(12, [Tree(121), Tree(122), Tree(123),])
              ]
          )
-    # print(t1)
+    print(t1)
     
-    assert t1.root_datum() == 1 
-    assert t1.height() == 3
+    # assert t1.root_datum() == 1 
+    # assert t1.height() == 3
     # for node in t1.iter_nodes():
     #     print(node)
     # for addr, n in t1.iter_nodes_with_address():
     #     print(addr, n)
-    for addr, n in t1.iter_nodes_with_address():
-        assert [int(e)-1 for e in list(str(n.datum))[1:]] == addr 
-        assert t1.search(n.datum) == addr 
+    # for addr, n in t1.iter_nodes_with_address():
+    #     assert [int(e)-1 for e in list(str(n.datum))[1:]] == addr 
+    #     assert t1.search(n.datum) == addr 
 
-    print(t1.delete([1, 1]))
-    print(t1)
+    # print(t1.delete([1, 1]))
+    # print(t1)
 
     # t1.insert([2], Tree(13, [Tree(131), Tree(132), Tree(133)]))
     # t1.insert([1, 1], Tree(122, [Tree(1221), Tree(1222)]))

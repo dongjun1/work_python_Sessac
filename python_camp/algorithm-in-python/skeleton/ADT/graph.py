@@ -52,13 +52,13 @@ class Graph:
                 self.E.remove(e)
             self.V.remove(v)
         elif self.backend == 'adjacent_list': 
-            print('before')
-            print(self.adjacent_list.get_vertices())
-            print(self.adjacent_list.get_edges())
+            # print('before')
+            # print(self.adjacent_list.get_vertices())
+            # print(self.adjacent_list.get_edges())
             self.adjacent_list.remove_vertex(v) 
-            print('after')
-            print(self.adjacent_list.get_vertices())
-            print(self.adjacent_list.get_edges())
+            # print('after')
+            # print(self.adjacent_list.get_vertices())
+            # print(self.adjacent_list.get_edges())
         elif self.backend == 'adjacnet_matrix':
             pass 
 
