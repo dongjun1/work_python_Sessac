@@ -23,60 +23,87 @@ class Tree:
         
 
     def iter_nodes(self):
-        yield self.root
-        cur = self.children
-        for node in cur:
-            for n in node.iter_nodes():
-                yield n
-    
+        # yield self.root
+        # cur = self.children
+        # for node in cur:
+        #     for n in node.iter_nodes():
+        #         yield n
+        res = []
+
+        for addr, node in self.iter_nodes_with_address():
+            res.append(node)
+        return res
+    # 재귀구조 뜯어볼 것.
     def iter_nodes_with_address(self):
         yield [], self.root
         
         for i, node in enumerate(self.children):
             for addr, n in node.iter_nodes_with_address():
                 yield [i] + addr, n
+
             
 
     def __iter__(self):
-        yield self.root.datum
-        cur = self.children
-        for node in cur:
-            for n in node:
-                yield n
-        
+        # yield self.root.datum
+        # cur = self.children
+        # for node in cur:
+        #     for n in node:
+        #         yield n
+        for addr, node in self.iter_nodes_with_address():
+            yield node.datum
             
     def insert(self, address, elem):
-        pass 
+        if not isinstance(elem, Tree):
+            elem = Tree(elem)
+        # cur = self
+        # for addr in address[:-1]:
+        #     cur = cur.children[addr]
+        # cur.children.insert(addr[-1], elem)
+        idx = address[0]
+        if len(address) == 1:
+            self.children.insert(idx, elem)
+        else:
+            self.children[idx].insert(address[1:], elem)
+
 
     def delete(self, address):
-        addr_with_node = list(self.iter_nodes_with_address())
-        del_value = 0
-        for node in addr_with_node:
-            if node[0] == address:
-                del_value = node[-1].datum
-        for node in self.iter_nodes():
-            if del_value == node.datum:
-                self.children.remove(node)
-                
-        return del_value
+        idx = address[0]
+        if len(address) == 1:
+            res = self.children[idx].root.datum
+            self.children = self.children[:idx] + self.children[idx + 1:]
+            return res
+        else :
+            self.children[idx].delete(address[1:])
 
         
     def search(self, elem):
-        addr_with_node = list(self.iter_nodes_with_address())
-        for node in addr_with_node:
-            if node[-1].datum == elem:
-                return node[0]
+        # addr_with_node = list(self.iter_nodes_with_address())
+        # for node in addr_with_node:
+        #     if node[-1].datum == elem:
+        #         return node[0]
+        # addr = []
+        # if self.root.datum == elem:
+        #     return []
+        # else:
+        #     for idx, child in enumerate(self.children):
+        #         result = child.search(elem)
+        #         if result is not None:
+        #             return [idx] + result
+                
+        for addr, node in self.iter_nodes_with_address():
+            if node.datum == elem:
+                return addr
 
 
     def root_datum(self):
         return self.root.datum
     
     def height(self):
-        res = []
-        for i in self.__iter__():
-            res += [i]
-        return len(str(res[-1]))
-    
+        # res = []
+        # for i in self.__iter__():
+        #     res += [i]
+        # return len(str(res[-1]))
+        h = 0    
 
     def __str__(self):
         return '\n'.join(self.s())

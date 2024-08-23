@@ -4,8 +4,7 @@ from ADT.tree import Tree
 from data_structure.tree import Tree
 
 def get_directory_tree(directory, ignore_directories = [], ignore_extensions = []):
-    pass 
-
+    pass
 
 if __name__ == '__main__':
     print(get_directory_tree('.'))

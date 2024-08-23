@@ -33,7 +33,10 @@ class Graph:
     def add_vertex(self, v):
         assert isinstance(v, Vertex)
         if self.backend == 'VE':
-            self.V += [v] 
+            if v not in self.V:
+                self.V += [v] 
+            else:
+                raise ValueError(f'{v} is already in the graph')
         elif self.backend == 'adjacent_list': 
             self.adjacent_list.add_vertex(v)    
         elif self.backend == 'adjacnet_matrix':
@@ -44,13 +47,16 @@ class Graph:
         if self.backend == 'VE':
             # for 문을 도는 list에서 remove()를 하면 list 원본 자체에서 삭제하기 때문에 반복문 수행 시 index가 꼬이는 현상이 발생. 앞으로 그러지 말 것.
             edges_to_remove = []
-            for e in self.E:
-                if e.from_vertex == v or e.to_vertex == v:
-                    # self.E.remove(e) 
-                    edges_to_remove.append(e)
-            for e in edges_to_remove:
-                self.E.remove(e)
-            self.V.remove(v)
+            try:
+                for e in self.E:
+                    if e.from_vertex == v or e.to_vertex == v:
+                        # self.E.remove(e) 
+                        edges_to_remove.append(e)
+                for e in edges_to_remove:
+                    self.E.remove(e)
+                self.V.remove(v)
+            except ValueError as e:
+                raise e
         elif self.backend == 'adjacent_list': 
             # print('before')
             # print(self.adjacent_list.get_vertices())
@@ -198,6 +204,7 @@ class Graph:
         ax.set_xticks([])
         ax.set_yticks([])
         plt.show()
+        
 
 
 if __name__ == '__main__':
