@@ -238,12 +238,24 @@ import matplotlib.pyplot as plt
 
 # y = -cos(2x + pi)의 그래프
 
+# x = np.linspace(-2*np.pi, 2*np.pi, 100)
+# y = np.cos(2 * x + np.pi)
+
+# plt.figure(figsize = (12, 5))
+# plt.plot(x, y, label = "cos(2 * x + np.pi)")
+# plt.xticks([-2*np.pi, -np.pi, 0, np.pi, 2*np.pi], labels = ["-2pi", "-pi", "0", "pi", "2pi"])
+# plt.grid(linestyle = ':')
+# plt.legend()
+# plt.show()
+
+# cos
 x = np.linspace(-2*np.pi, 2*np.pi, 100)
-y = np.cos(2 * x + np.pi)
+y = 2 * np.cos(2 * x) - 1
 
 plt.figure(figsize = (12, 5))
-plt.plot(x, y, label = "cos(2 * x + np.pi)")
-plt.xticks([-2*np.pi, -np.pi, 0, np.pi, 2*np.pi], labels = ["-2pi", "-pi", "0", "pi", "2pi"])
-plt.grid(linestyle = ':')
+plt.plot(x, np.cos(x), label = "cos(x)")
+plt.plot(x, y, label = "2 * cos(2 * x) - 1")
 plt.legend()
+
+plt.grid(linestyle = ':')
 plt.show()
