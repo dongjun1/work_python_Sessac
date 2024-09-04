@@ -34,8 +34,8 @@ def crawl_ranking_news():
         
         div = soup.find_all('div', {'class' : 'rankingnews_box'})
         for d in div:
-            strong = d.find('strong', {'class' : 'rankingnews_name'})
-            print(strong.text)
+            name = d.find('strong', {'class' : 'rankingnews_name'})
+            print(name.text)
             ul = d.find('ul')
             for di in ul.find_all('div', {'class' : 'list_content'}):
                 a = di.find('a')
