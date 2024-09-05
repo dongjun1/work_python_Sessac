@@ -5,6 +5,10 @@ from time import time
 import requests 
 from bs4 import BeautifulSoup
 
+# async 함수 : 안에 무조건 await하는 다른 함수가 있어야함, 다른 함수에서 부를 때 무조건 await 되어야 함. promise를 반환.
+#              실행되려면 asyncio.run() 안에서 실행하여야 한다. gather/await 등으로 이 때까지 
+
+# profiling : 소스코드에서 사용되는 시간이나 메모리등을 최적화하기위해 찾아가는 것.
 
 def crawl_press_names_and_codes():
     """Make the dict that have press code as key, and press name as value. Crawl from https://media.naver.com/channel/settings. 
