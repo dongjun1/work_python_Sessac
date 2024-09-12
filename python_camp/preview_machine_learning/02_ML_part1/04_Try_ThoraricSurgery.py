@@ -91,6 +91,7 @@ print(grid_rf.cv_results_['mean_test_score'])
 print(grid_rf.best_score_) 
 # result of GridSearch.. not preprocessing
 # {'max_depth': 3, 'n_estimators': 50}
+# 0.851....
 
 
 # rf_best = RandomForestClassifier(n_estimators = 100, max_depth = 15)
