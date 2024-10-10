@@ -9,7 +9,7 @@ from time import time
 # 3) os.getcwd / os.changedir 해보기 
 # --------------------------------------------
 
-#cwd = current working dir
+# cwd = current working dir
 # print(os.getcwd())
 # print(os.path.getatime(os.getcwd()))
 # print(os.path.getmtime(os.getcwd()))
