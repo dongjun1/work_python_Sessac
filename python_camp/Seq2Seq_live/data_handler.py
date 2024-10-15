@@ -47,6 +47,12 @@ class Vocabulary:
             return self.word2idx[word]
         
         return self.OOV_IDX
+    
+    def index_to_word(self, index):
+        if index in self.idx2word:
+            return self.idx2word[index]
+        
+        return self.OOV_IDX
 
 def parse_file(file_path, train_valid_test_ratio = (0.8, 0.1, 0.1), batch_size = 32):
     f = open(file_path, 'r', encoding = 'utf-8')
@@ -110,6 +116,3 @@ def preprocessing(batch, source_vocab, target_vocab):
         target_seqs[idx] = seq
 
     return torch.tensor(source_seqs), torch.tensor(target_seqs)
-
-
-    

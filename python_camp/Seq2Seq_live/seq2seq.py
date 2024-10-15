@@ -105,6 +105,7 @@ if __name__ == '__main__':
     from trainer import train_model
 
     path = 'kor-eng/kor.txt'
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     
     embbeding_dim = 256
     batch_size = 32
@@ -116,15 +117,27 @@ if __name__ == '__main__':
     learning_rate = 0.001
     num_epochs = 10
 
+    
+
+    print(f'Using device is {device}')
     (train, valid, test), source_vocab, target_vocab = parse_file(path, batch_size = batch_size)
+
+    # for k, v in target_vocab.idx2word.items():
+    #     print(k, v)
 
     encoder = Encoder(source_vocab, embbeding_dim, hidden_dim, encoder_model)
     decoder = Decoder(target_vocab, embbeding_dim, hidden_dim, decoder_model)
 
     model = Seq2Seq(encoder = encoder, decoder = decoder)
 
-    train_loss_history, valid_loss_history = train_model(model = model, train_loader = train, valid_loader = valid, criterion = criterion, optimizer = optimizer, num_epochs = num_epochs, learning_rate = learning_rate)
+    train_loss_history, valid_loss_history = train_model(model = model, train_loader = train, valid_loader = valid, 
+                                                         source_vocab = source_vocab, target_vocab = target_vocab,
+                                                         criterion = criterion, optimizer = optimizer, num_epochs = num_epochs, learning_rate = learning_rate)
 
-    # plt.plot(train_loss_history, valid_loss_history)
-    # plt.show()
+    fig, axs = plt.subplots(3,1)
+
+    axs[0].plot(train_loss_history)
+    axs[1].plot(valid_loss_history)
+    
+    plt.show()
 
