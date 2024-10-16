@@ -52,9 +52,9 @@ class Vocabulary:
         if index in self.idx2word:
             return self.idx2word[index]
         
-        return self.OOV_IDX
+        return self.OOV
 
-def parse_file(file_path, train_valid_test_ratio = (0.8, 0.1, 0.1), batch_size = 32):
+def parse_file(file_path, device, train_valid_test_ratio = (0.8, 0.1, 0.1), batch_size = 32):
     f = open(file_path, 'r', encoding = 'utf-8')
     data = []
     source_word_count = defaultdict(int) # == defaultdict(lambda : 0)
@@ -62,7 +62,7 @@ def parse_file(file_path, train_valid_test_ratio = (0.8, 0.1, 0.1), batch_size =
 
     for line in f.readlines():
         line = line.strip()
-        source, target, etc = line.split('\t')
+        source, target, _ = line.split('\t')
 
         source = source.split()
 
@@ -85,11 +85,46 @@ def parse_file(file_path, train_valid_test_ratio = (0.8, 0.1, 0.1), batch_size =
     lengths = [int(len(data) * ratio) for ratio in train_valid_test_ratio]
     lengths[-1] = len(data) - sum(lengths[:-1])
     datasets = random_split(data, lengths)
-    dataloaders = [DataLoader(dataset, batch_size = batch_size, shuffle = True, collate_fn = lambda x: preprocessing(x, source_vocab, target_vocab)) for dataset in datasets]
+    dataloaders = [DataLoader(dataset, batch_size = batch_size, shuffle = True, collate_fn = lambda x: preprocessing(x, device, source_vocab, target_vocab)) for dataset in datasets]
 
     return dataloaders, source_vocab, target_vocab
 
-def preprocessing(batch, source_vocab, target_vocab):
+def simple_samples(file_path, device, train_valid_test_ratio = (0.8, 0.1, 0.1), batch_size = 32):
+    f = open(file_path, 'r', encoding = 'utf-8')
+    data = []
+    source_word_count = defaultdict(int) # == defaultdict(lambda : 0)
+    target_word_count = defaultdict(int)
+
+    for line in f.readlines()[:10]:
+        line = line.strip()
+        source, target, _ = line.split('\t')
+
+        source = source.split()
+
+        for source_token in source:
+            source_word_count[source_token] += 1
+        
+        target = target.split()
+
+        for target_token in target:
+            target_word_count[target_token] += 1
+
+        data.append((source, target))
+
+    source_vocab = Vocabulary(source_word_count)
+    target_vocab = Vocabulary(target_word_count)
+
+    for idx, (source, target) in enumerate(data):
+        data[idx] = (list(map(source_vocab.word_to_index, source)), list(map(target_vocab.word_to_index, target))) # return ([source's word_index], [target's word_index])
+        
+    lengths = [int(len(data) * ratio) for ratio in train_valid_test_ratio]
+    lengths[-1] = len(data) - sum(lengths[:-1])
+    datasets = random_split(data, lengths)
+    dataloaders = [DataLoader(dataset, batch_size = batch_size, shuffle = True, collate_fn = lambda x: preprocessing(x, device, source_vocab, target_vocab)) for dataset in datasets]
+
+    return dataloaders, source_vocab, target_vocab
+
+def preprocessing(batch, device, source_vocab, target_vocab):
     sources = [e[0] for e in batch]
     targets = [e[1] for e in batch]
 
@@ -114,5 +149,13 @@ def preprocessing(batch, source_vocab, target_vocab):
         seq = seq + [target_vocab.PAD_IDX] * (target_max_length - len(seq))
         assert len(seq) == target_max_length, f'Expected to have {target_max_length}, now {len(seq)}'
         target_seqs[idx] = seq
+    
+    return torch.tensor(source_seqs).to(device), torch.tensor(target_seqs).to(device)
 
-    return torch.tensor(source_seqs), torch.tensor(target_seqs)
+if __name__ == '__main__':
+    (train, valid, test), source_vocab, target_vocab = simple_samples('kor-eng/kor.txt')
+    
+    for x, y in train:
+        print(x)
+        print(y)
+        break

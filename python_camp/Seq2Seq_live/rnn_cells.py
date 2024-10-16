@@ -4,12 +4,14 @@ import torch.nn as nn
 # RNNCell's input = step, RNNBuiltIn's input = sequence
 # this step, use RNNCell, because use encoder, decoder both
 class RNNCellManual(nn.Module):
-    def __init__(self, input_dim, hidden_dim):
+    def __init__(self, input_dim, hidden_dim, device):
         super(RNNCellManual, self).__init__()
         self.input_dim = input_dim
         self.hidden_dim = hidden_dim
         self.i2h = nn.Linear(input_dim, hidden_dim)
         self.h2h = nn.Linear(hidden_dim, hidden_dim)
+        self.device = device
+        
     
     def forward(self, x_t, h_t):
         '''
@@ -24,7 +26,7 @@ class RNNCellManual(nn.Module):
         assert h_t.size(0) == batch_size, f'0th dimension of output of RNNManualCell is expected to be {batch_size}, got {h_t.size(0)}'
         assert h_t.size(1) == self.hidden_dim, f'Hidden dimension of output of RNNManualCell is expected to be {self.hidden_dim}, got {h_t.size(1)}'
         
-        h_t = torch.tanh(self.i2h(x_t) + self.h2h(h_t))
+        h_t = torch.tanh(self.i2h(x_t) + self.h2h(h_t)).to(self.device)
 
         assert h_t.size(0) == batch_size, f'0th dimension of output of RNNManualCell is expected to be {batch_size}, got {h_t.size(0)}'
         assert h_t.size(1) == self.hidden_dim, f'Hidden dimension of output of RNNManualCell is expected to be {self.hidden_dim}, got {h_t.size(1)}'
@@ -32,10 +34,10 @@ class RNNCellManual(nn.Module):
         return h_t
     
     def initialize(self, batch_size):
-        return torch.zeros(batch_size, self.hidden_dim)
+        return torch.zeros(batch_size, self.hidden_dim).to(self.device)
 
 class LSTMCellManual(nn.Module):
-    def __init__(self, input_dim, hidden_dim):
+    def __init__(self, input_dim, hidden_dim, device):
         super(LSTMCellManual, self).__init__()
         self.i2i = nn.Linear(input_dim, hidden_dim)
         self.h2i = nn.Linear(hidden_dim, hidden_dim)
@@ -47,6 +49,7 @@ class LSTMCellManual(nn.Module):
         self.h2o = nn.Linear(hidden_dim, hidden_dim)
         self.hidden_dim = hidden_dim
         self.input_dim = input_dim
+        self.device = device
 
     def forward(self, x_t, h_t, c_t):
         batch_size = x_t.size(0)
@@ -58,10 +61,10 @@ class LSTMCellManual(nn.Module):
         assert c_t.size(0) == batch_size
         assert c_t.size(1) == self.hidden_dim
 
-        i_t = torch.sigmoid(self.i2i(x_t) + self.h2i(h_t))
-        f_t = torch.sigmoid(self.i2f(x_t) + self.h2f(h_t))
-        g_t = torch.tanh(self.i2g(x_t) + self.h2g(h_t))
-        o_t = torch.sigmoid(self.i2o(x_t) + self.h2o(h_t))
+        i_t = torch.sigmoid(self.i2i(x_t) + self.h2i(h_t)).to(self.device)
+        f_t = torch.sigmoid(self.i2f(x_t) + self.h2f(h_t)).to(self.device)
+        g_t = torch.tanh(self.i2g(x_t) + self.h2g(h_t)).to(self.device)
+        o_t = torch.sigmoid(self.i2o(x_t) + self.h2o(h_t)).to(self.device)
 
         c_t = f_t * c_t + i_t * g_t
         h_t = o_t * torch.tanh(c_t)
@@ -69,4 +72,4 @@ class LSTMCellManual(nn.Module):
         return h_t, c_t
     
     def initialize(self, batch_size):
-        return torch.zeros(batch_size, self.hidden_dim), torch.zeros(batch_size, self.hidden_dim)
+        return torch.zeros(batch_size, self.hidden_dim).to(self.device), torch.zeros(batch_size, self.hidden_dim).to(self.device)
