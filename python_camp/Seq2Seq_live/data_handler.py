@@ -62,9 +62,14 @@ def parse_file(file_path, device, train_valid_test_ratio = (0.8, 0.1, 0.1), batc
 
     for line in f.readlines():
         line = line.strip()
-        source, target, _ = line.split('\t')
+        
+        if len(line.split('\t')) == 3:
+            source, target, _ = line.split('\t')
+        elif len(line.split('\t')) == 2:
+            source, target = line.split('\t')
 
         source = source.split()
+        
 
         for source_token in source:
             source_word_count[source_token] += 1
@@ -76,8 +81,8 @@ def parse_file(file_path, device, train_valid_test_ratio = (0.8, 0.1, 0.1), batc
 
         data.append((source, target))
 
-    source_vocab = Vocabulary(source_word_count)
-    target_vocab = Vocabulary(target_word_count)
+    source_vocab = Vocabulary(source_word_count, coverage = 0.9)
+    target_vocab = Vocabulary(target_word_count, coverage = 0.9)
     
     for idx, (source, target) in enumerate(data):
         data[idx] = (list(map(source_vocab.word_to_index, source)), list(map(target_vocab.word_to_index, target))) # return ([source's word_index], [target's word_index])
@@ -95,24 +100,30 @@ def simple_samples(file_path, device, train_valid_test_ratio = (0.8, 0.1, 0.1), 
     source_word_count = defaultdict(int) # == defaultdict(lambda : 0)
     target_word_count = defaultdict(int)
 
-    for line in f.readlines()[:10]:
+    for line in f.readlines():
         line = line.strip()
-        source, target, _ = line.split('\t')
-
-        source = source.split()
-
-        for source_token in source:
-            source_word_count[source_token] += 1
         
+        if len(line.split('\t')) == 3:
+            source, target, _ = line.split('\t')
+        elif len(line.split('\t')) == 2:
+            source, target = line.split('\t')
+        
+        
+        source = source.split()
         target = target.split()
+        if len(source) < 20 and len(target) < 20:
+            for source_token in source:
+                source_word_count[source_token] += 1
+            
 
-        for target_token in target:
-            target_word_count[target_token] += 1
+            for target_token in target:
+                target_word_count[target_token] += 1
 
-        data.append((source, target))
+        
+            data.append((source, target))
 
-    source_vocab = Vocabulary(source_word_count)
-    target_vocab = Vocabulary(target_word_count)
+    source_vocab = Vocabulary(source_word_count, coverage = 0.9)
+    target_vocab = Vocabulary(target_word_count, coverage = 0.9)
 
     for idx, (source, target) in enumerate(data):
         data[idx] = (list(map(source_vocab.word_to_index, source)), list(map(target_vocab.word_to_index, target))) # return ([source's word_index], [target's word_index])
@@ -139,6 +150,7 @@ def preprocessing(batch, device, source_vocab, target_vocab):
 
     source_max_length = max([len(s) for s in source_seqs])
     target_max_length = max([len(s) for s in target_seqs])
+    
 
     for idx, seq in enumerate(source_seqs):
         seq = seq + [source_vocab.PAD_IDX] * (source_max_length - len(seq))

@@ -1,5 +1,6 @@
 from collections import defaultdict
 import torch
+import torch.nn as nn
 from torch.utils.data import random_split, DataLoader, TensorDataset
 
 class Vocabulary:
@@ -116,10 +117,24 @@ def preprocessing(batch_dataset, eng_vocab, kor_vocab):
     
 
 if __name__ == '__main__':
-    path = 'kor-eng/kor.txt'
+    # path = 'kor-eng/kor.txt'
 
-    (train, valid, test), eng_vocab, kor_vocab = get_texts(path)
+    # (train, valid, test), eng_vocab, kor_vocab = get_texts(path)
 
+    # input : (batch_size, number_of_classes)
+    input = torch.tensor([
+        [1.2, 10.5, 2.1, 0.9],
+        [1.0, 2.0, 0.1, 0.3],
+        [20.1, -3.1, 2.5, 1.0]
+    ])
+
+    # output: (batch_size, )
+    output = torch.tensor([2, 1, 0])
+
+    criterion = nn.CrossEntropyLoss()
+
+    loss = criterion(input, output)
+    print(loss)
     
 
     
