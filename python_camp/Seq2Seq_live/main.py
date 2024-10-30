@@ -13,9 +13,13 @@ if __name__ == '__main__':
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     # device = torch.device('cpu')
     
-    # encoder, decoder의 모델을 바꿔보기.
+<<<<<<< HEAD
     embbeding_dim = 256
     batch_size = 128
+=======
+    embbeding_dim = 256
+    batch_size = 128
+>>>>>>> af78c19a8c7b7f88048402c3db5759f5c18f501f
     encoder_model = RNNCellManual
     decoder_model = RNNCellManual
     hidden_dim = 128
