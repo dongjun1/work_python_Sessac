@@ -292,7 +292,7 @@ train_scaled = (train_X - x_mean) / x_std
 test_scaled = (test_X - x_mean) / x_std
 
 # DT
-# default of DT
+# default of DT : entropy 값이 가장 커지는 기준으로 나눔.
 # criterion='gini', splitter='best', max_depth=None, min_samples_split=2, min_impurity_decrease=0.0
 # min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_features=None, max_leaf_nodes=None, class_weight=None
 # dt의 GridSearch는 depth, num of terminal nodes, num of features, feature가 연속형이면 하나하나 전부.... 등을 고려해야함.
